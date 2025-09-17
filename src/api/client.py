@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 import time
 import json
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple, List
 from dataclasses import dataclass, asdict
 from tenacity import retry, stop_after_attempt, wait_exponential
 import logging
@@ -98,19 +98,20 @@ class APIRequestManager:
         try:
             response_data = json.loads(response_content)
 
-            # OpenAI格式
             if 'usage' in response_data:
                 usage = response_data['usage']
-                input_tokens = usage.get('prompt_tokens', 0)
-                output_tokens = usage.get('completion_tokens', 0)
-                total_tokens = usage.get('total_tokens', 0)
 
-            # Claude格式
-            elif 'usage' in response_data:
-                usage = response_data['usage']
-                input_tokens = usage.get('input_tokens', 0)
-                output_tokens = usage.get('output_tokens', 0)
-                total_tokens = input_tokens + output_tokens
+                # OpenAI格式 (also used by Volcano Cloud)
+                if 'prompt_tokens' in usage:
+                    input_tokens = usage.get('prompt_tokens', 0)
+                    output_tokens = usage.get('completion_tokens', 0)
+                    total_tokens = usage.get('total_tokens', 0)
+
+                # Claude格式
+                elif 'input_tokens' in usage:
+                    input_tokens = usage.get('input_tokens', 0)
+                    output_tokens = usage.get('output_tokens', 0)
+                    total_tokens = input_tokens + output_tokens
 
         except (json.JSONDecodeError, KeyError):
             pass

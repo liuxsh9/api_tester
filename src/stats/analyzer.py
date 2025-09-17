@@ -233,6 +233,10 @@ class TestDatabase:
 
                 # 重构LoadTestResult
                 row_dict['results'] = request_results
+                # 移除数据库字段，因为LoadTestResult不需要这些字段
+                for field in ['id', 'session_id']:
+                    if field in row_dict:
+                        del row_dict[field]
                 results.append(LoadTestResult(**row_dict))
 
             return results

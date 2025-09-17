@@ -3,7 +3,10 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(python:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(uv run:*)",
+      "Bash(sqlite3:*)",
+      "Bash(uv add:*)"
     ],
     "deny": [],
     "ask": []
